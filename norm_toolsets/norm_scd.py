@@ -29,7 +29,7 @@ def deconvolved_channel_stats(stain_img, stain_mask, bg_mask):
 
 
 def fit_spline(src_stats, dst_stats):
-    # % Find any rows containing a NaN in either set of stats, and eliminate them
+    # Find any rows containing a NaN in either set of stats, and eliminate them
     NaNs = np.isnan(src_stats) & np.isnan(dst_stats)
     src_stats = src_stats[~NaNs]
     dst_stats = dst_stats[~NaNs]
@@ -38,13 +38,12 @@ def fit_spline(src_stats, dst_stats):
     src_stats, idx = np.sort(src_stats)
     dst_stats = dst_stats(idx)
 
-    # % Append values at the extremes to make sure that the values of pixels with
-    # % very high or low intensity remain unchanged by spline mapping
+    # Append values at the extremes to make sure that the values of pixels with
+    # very high or low intensity remain unchanged by spline mapping
     src_stats = np.stack((-100, src_stats[:], 1000))
     dst_stats = np.stack((-100, dst_stats[:], 1000))
 
-    # % Generate the smoothing spline
-    # Spline = csaps(src_stats, dst_stats, 0.000009)
+    # Generate the smoothing spline
     # 19584
     spline = UnivariateSpline(np.array(src_stats), np.array(dst_stats), s=3400)
 
